@@ -1,0 +1,5 @@
+$kind: http-request
+description: ""
+url: http://127.0.0.1:8101/api/course/courses
+method: GET
+order: 3000

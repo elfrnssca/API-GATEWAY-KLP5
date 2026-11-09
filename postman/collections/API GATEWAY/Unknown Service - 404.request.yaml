@@ -1,0 +1,5 @@
+$kind: http-request
+description: ""
+url: http://127.0.0.1:8101/api/salah/test
+method: GET
+order: 4000
