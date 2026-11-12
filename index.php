@@ -17,7 +17,7 @@ if ($path === '/health' && $method === 'GET') {
 }
 
 // Baca konfigurasi service registry
-$servicesFile = __DIR__ . '/services.json';
+$servicesFile = _DIR_ . '/services.json';
 if (!file_exists($servicesFile)) {
     http_response_code(500);
     echo json_encode([
@@ -43,7 +43,14 @@ if ($path === '/api/services' && $method === 'GET') {
 // 3. Forwarding Dynamic ANY /api/{service}/{path}
 $pattern = '#^/api/([^/]+)(/.*)?$#';
 if (preg_match($pattern, $path, $matches)) {
-    $targetService = $matches[1];
+    // Nama pada URL (resource) -> nama service di services.json
+    $aliases = [
+        'courses'       => 'course',
+        'assignments'   => 'assignment',
+        'submissions'   => 'submission',
+        'notifications' => 'notification',
+    ];
+    $targetService = $aliases[$matches[1]] ?? $matches[1];
     $subPath       = $matches[2] ?? '';
 
     // Cek keberadaan service di services.json
@@ -58,7 +65,8 @@ if (preg_match($pattern, $path, $matches)) {
     }
 
     // Susun URL tujuan ke target service
-    $targetUrl = rtrim($services[$targetService], '/') . '/api/' . $targetService . $subPath;
+    // Teruskan path ASLI dari client (mis. /api/assignments), jangan disusun ulang dari nama service
+    $targetUrl = rtrim($services[$targetService], '/') . $path;
     if (!empty($_SERVER['QUERY_STRING'])) {
         $targetUrl .= '?' . $_SERVER['QUERY_STRING'];
     }
