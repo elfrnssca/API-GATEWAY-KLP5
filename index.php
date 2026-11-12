@@ -17,7 +17,7 @@ if ($path === '/health' && $method === 'GET') {
 }
 
 // Baca konfigurasi service registry
-$servicesFile = _DIR_ . '/services.json';
+$servicesFile = __DIR__ . '/services.json';
 if (!file_exists($servicesFile)) {
     http_response_code(500);
     echo json_encode([
